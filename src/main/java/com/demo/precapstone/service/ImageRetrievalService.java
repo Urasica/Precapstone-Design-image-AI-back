@@ -18,8 +18,8 @@ public class ImageRetrievalService {
     @Autowired
     private ImageRepository imageRepository;
 
-    public List<Image> getRecentImages(String phoneNumber) {
-        User user = userRepository.findByPhoneNumber(phoneNumber);
+    public List<Image> getRecentImages(String userName) {
+        User user = userRepository.findByUserName(userName);
         if (user == null) {
             throw new RuntimeException("User not found");
         }

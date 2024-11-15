@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+/src/main/java/com/demo/precapstone/config/config.properties
+/src/main/java/com/demo/precapstone/config/ConfigLoaderPpurio.java
+/key.txt

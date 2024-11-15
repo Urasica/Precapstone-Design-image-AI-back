@@ -1,44 +1,38 @@
 package com.demo.precapstone.service;
 
 import org.springframework.stereotype.Service;
-import java.io.IOException;
-import java.nio.file.Files;
+
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.Base64;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.UUID;
+import java.nio.file.Files;
 
 @Service
 public class FileStorageService {
 
-    private final Path rootLocation = Paths.get("uploads");
+    private final String storageDirectory = "src/main/resources/static/upload"; // 이미지가 저장될 디렉터리 경로
 
-    // 생성자를 이용한 초기화
-    public FileStorageService() {
+    public String storeImage(String base64ImageData) {
         try {
-            Files.createDirectories(rootLocation);  // 파일 저장 경로가 없을 경우 생성
-        } catch (IOException e) {
-            throw new RuntimeException("Could not initialize storage", e);
-        }
-    }
+            // base64 문자열을 디코딩하여 바이트 배열로 변환
+            byte[] imageBytes = Base64.getDecoder().decode(base64ImageData);
 
-    public String storeImage(byte[] imageData) {
-        try {
-            // 파일명 생성 (UUID)
-            String fileName = UUID.randomUUID().toString() + ".png";
-            Path destinationFile = rootLocation.resolve(Paths.get(fileName))
-                    .normalize().toAbsolutePath();
+            // 고유한 파일 이름 생성 (예: UUID 사용)
+            String fileName = "image_" + System.currentTimeMillis() + ".jpg";
+            Path filePath = Paths.get(storageDirectory, fileName);
 
-            // 이미지 데이터를 로컬 파일로 저장
-            Files.write(destinationFile, imageData);
+            // 바이트 배열을 파일로 저장
+            Files.createDirectories(filePath.getParent()); // 저장 디렉터리가 없으면 생성
+            try (OutputStream os = new FileOutputStream(filePath.toFile())) {
+                os.write(imageBytes);
+            }
 
-            // 이미지 URL 반환 (예: /uploads/{fileName})
-            return "/uploads/" + fileName;
-        } catch (IOException e) {
+            // 저장된 파일의 경로를 문자열로 반환
+            return "localhost:8080/upload/" + fileName;
+        } catch (Exception e) {
             throw new RuntimeException("Failed to store image", e);
         }
-    }
-
-    public Path getImagePath(String fileName) {
-        return rootLocation.resolve(fileName).normalize().toAbsolutePath();
     }
 }

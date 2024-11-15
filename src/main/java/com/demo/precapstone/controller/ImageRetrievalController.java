@@ -20,12 +20,12 @@ public class ImageRetrievalController {
     @Autowired
     private ImageRetrievalService imageRetrievalService;
 
-    @GetMapping("/recent")
-    public ResponseEntity<List<ImageResponseDTO>> getRecentImages(@RequestParam String phoneNumber) {
-        List<Image> images = imageRetrievalService.getRecentImages(phoneNumber);
-        List<ImageResponseDTO> response = images.stream()
-                .map(image -> new ImageResponseDTO(image.getImageUrl(), image.getPrompt(), image.getGenAt()))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(response);
-    }
+//    @GetMapping("/recent")
+//    public ResponseEntity<List<ImageResponseDTO>> getRecentImages(@RequestParam String userName) {
+//        List<Image> images = imageRetrievalService.getRecentImages(userName);
+//        List<ImageResponseDTO> response = images.stream()
+//                .map(image -> new ImageResponseDTO(image.getBase64Image(), image.getImageUrl(), image.getPrompt(), image.getGenAt()))
+//                .collect(Collectors.toList());
+//        return ResponseEntity.ok(response);
+//    }
 }

@@ -2,6 +2,7 @@ package com.demo.precapstone.service;
 
 import com.demo.precapstone.dao.Image;
 import com.demo.precapstone.dao.User;
+import com.demo.precapstone.dto.ImageDTO;
 import com.demo.precapstone.repository.ImageRepository;
 import com.demo.precapstone.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
-public class ImageGenerationService {
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ImageRepository imageRepository;
+public class ImageGenerationServiceDemo {
 
     @Autowired
     private OpenAIService openAIService;
@@ -27,22 +22,13 @@ public class ImageGenerationService {
     @Autowired
     private FileStorageService fileStorageService;
 
-    public Image generateImage(String content, String userName) {
-        User user = userRepository.findByUserName(userName);
-        if (user == null) {
-            throw new RuntimeException("User not found");
-        }
-
+    public ImageDTO generateImage(String content) {
         String promptText = openAIService.createPromptFromText(content);
         String imageData = colabService.generateImage(promptText);
         String imageUrl = fileStorageService.storeImage(imageData);
 
-        Image image = new Image();
-        image.setImageUrl(imageUrl);
-        image.setPrompt(promptText);
-        image.setGenAt(LocalDateTime.now());
-        image.setUser(user);
+        ImageDTO imageDTO = new ImageDTO(imageUrl, imageData);
 
-        return imageRepository.save(image);
+        return imageDTO;
     }
 }
