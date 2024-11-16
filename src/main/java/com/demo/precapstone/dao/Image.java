@@ -16,6 +16,7 @@ public class Image {
     private Long id;
 
     private String imageUrl;
+    @Column(length = 1000)
     private String prompt;
     private LocalDateTime genAt;
 

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,12 +21,17 @@ public class ImageRetrievalController {
     @Autowired
     private ImageRetrievalService imageRetrievalService;
 
-//    @GetMapping("/recent")
-//    public ResponseEntity<List<ImageResponseDTO>> getRecentImages(@RequestParam String userName) {
-//        List<Image> images = imageRetrievalService.getRecentImages(userName);
-//        List<ImageResponseDTO> response = images.stream()
-//                .map(image -> new ImageResponseDTO(image.getBase64Image(), image.getImageUrl(), image.getPrompt(), image.getGenAt()))
-//                .collect(Collectors.toList());
-//        return ResponseEntity.ok(response);
-//    }
+    @GetMapping("/recent")
+    public ResponseEntity<List<ImageResponseDTO>> getRecentImages(@RequestParam String userName) {
+        try {
+            List<ImageResponseDTO> response = imageRetrievalService.getRecentImages(userName);
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException ex) {
+            ex.printStackTrace();
+            return ResponseEntity.badRequest().body(null);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(500).body(null); // Generic error
+        }
+    }
 }

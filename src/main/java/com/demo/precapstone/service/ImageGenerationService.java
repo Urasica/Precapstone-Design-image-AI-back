@@ -2,6 +2,7 @@ package com.demo.precapstone.service;
 
 import com.demo.precapstone.dao.Image;
 import com.demo.precapstone.dao.User;
+import com.demo.precapstone.dto.ImageDTO;
 import com.demo.precapstone.repository.ImageRepository;
 import com.demo.precapstone.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class ImageGenerationService {
     @Autowired
     private FileStorageService fileStorageService;
 
-    public Image generateImage(String content, String userName) {
+    public ImageDTO generateImage(String content, String userName) {
         User user = userRepository.findByUserName(userName);
         if (user == null) {
             throw new RuntimeException("User not found");
@@ -42,7 +43,10 @@ public class ImageGenerationService {
         image.setPrompt(promptText);
         image.setGenAt(LocalDateTime.now());
         image.setUser(user);
+        imageRepository.save(image);
 
-        return imageRepository.save(image);
+        ImageDTO imageDTO = new ImageDTO(imageUrl, imageData);
+
+        return imageDTO;
     }
 }

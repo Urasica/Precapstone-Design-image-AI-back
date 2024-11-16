@@ -30,7 +30,7 @@ public class FileStorageService {
             }
 
             // 저장된 파일의 경로를 문자열로 반환
-            return "localhost:8080/upload/" + fileName;
+            return "/upload/" + fileName;
         } catch (Exception e) {
             throw new RuntimeException("Failed to store image", e);
         }
