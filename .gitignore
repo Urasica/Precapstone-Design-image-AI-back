@@ -35,3 +35,4 @@ build/
 /src/main/java/com/demo/precapstone/config/ConfigLoaderPpurio.java
 /src/main/resources/python/openai/key.txt
 /key.txt
+/src/main/resources/static/upload/
