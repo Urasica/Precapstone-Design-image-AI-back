@@ -7,5 +7,5 @@ public class MessageDTO {
     private String content;
     private String path;
     private String fromPhoneNumber;
-    private String toPhoneNumber;
+    private String[] toPhoneNumbers;
 }

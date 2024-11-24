@@ -19,8 +19,8 @@ import java.util.*;
 public class MessageService {
     private static final Integer TIME_OUT = 5000;
     private static final String PPURIO_ACCOUNT = "dmswnd655";
-    private static String from = "01034385841";
-    private static String file_path = "/upload/watch.jpg";
+    private static String from;
+    private static String file_path;
     private static final String URI = "https://message.ppurio.com";
     private static String content;
     private static String to;
@@ -28,12 +28,12 @@ public class MessageService {
     private RequestService requestService = new RequestService();
 
     // sendMessage 메서드: 토큰 발급 후 메시지 전송
-    public void sendMessage(MessageDTO messageDTO) {
+    public void sendMessage(MessageDTO messageDTO, String toNumber) {
         String basicAuthorization = ConfigLoaderPpurio.getBasicAuthorization();
 
         file_path= "src/main/resources/static" + messageDTO.getPath();
         from=messageDTO.getFromPhoneNumber();
-        to=messageDTO.getToPhoneNumber();
+        to=toNumber;
         content=messageDTO.getContent();
 
         // 토큰 발급
