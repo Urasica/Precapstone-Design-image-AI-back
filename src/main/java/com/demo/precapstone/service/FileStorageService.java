@@ -19,7 +19,7 @@ public class FileStorageService {
             // base64 문자열을 디코딩하여 바이트 배열로 변환
             byte[] imageBytes = Base64.getDecoder().decode(base64ImageData);
 
-            // 고유한 파일 이름 생성 (예: UUID 사용)
+            // 고유한 파일 이름 생성
             String fileName = "image_" + System.currentTimeMillis() + ".jpg";
             Path filePath = Paths.get(storageDirectory, fileName);
 

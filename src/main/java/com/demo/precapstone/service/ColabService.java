@@ -10,9 +10,11 @@ import org.json.JSONObject;
 @Service
 public class ColabService {
 
-    private final String colabApiUrl = "http://localhost:5000/generate";
+    private final String colabApiUrl = "http://211.185.45.170:5000/generate";
 
     public String generateImage(String prompt) {
+        System.out.println(prompt);
+
         try {
             // Colab 서버에 HTTP 요청을 전송
             HttpClient client = HttpClient.newHttpClient();

@@ -10,8 +10,9 @@ import java.util.List;
 
 @Service
 public class OpenAIService {
-    public String createPromptFromText(String koreanText) {
-        List<String> command = buildCommand(koreanText);
+
+    public String createPromptFromText(String message, String prompt) {
+        List<String> command = buildCommand(message + prompt);
 
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(command);
@@ -43,14 +44,16 @@ public class OpenAIService {
     private List<String> buildCommand(String koreanText) {
         List<String> command = new ArrayList<>();
         String os = System.getProperty("os.name").toLowerCase();
-        String pythonScript = "src/main/java/com/demo/precapstone/service/openai/prompt.py"; // 상대 경로 사용
+        String pythonScript;
 
         if (os.contains("win")) {
+            pythonScript = "src/main/resources/python/openai/prompt.py";
             command.add("cmd.exe");
             command.add("/c");
             command.add("python");
         } else {
-            command.add("python3"); // Linux/Mac에서는 보통 python3를 사용
+            pythonScript = "/home/ubuntu/pre/project/src/main/resources/python/openai/prompt.py";
+            command.add("python3");
         }
 
         command.add(pythonScript);

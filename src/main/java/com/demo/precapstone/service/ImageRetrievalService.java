@@ -40,11 +40,17 @@ public class ImageRetrievalService {
         }
 
         return images.stream()
-                .map(image -> new ImageResponseDTO(
-                        encodeImageToBase64(image.getImageUrl()),
-                        image.getImageUrl(),
-                        image.getGenAt()
-                ))
+                .limit(10)
+                .map(image -> {
+                    try {
+                        String encodedImage = encodeImageToBase64(image.getImageUrl());
+                        return new ImageResponseDTO(encodedImage, image.getImageUrl(), image.getGenAt());
+                    } catch (RuntimeException e) {
+                        // 로그에 에러 메시지를 기록
+                        System.err.println("Failed to process image: " + image.getImageUrl() + ". Error: " + e.getMessage());
+                        return new ImageResponseDTO("ERROR: Unable to load image", image.getImageUrl(), image.getGenAt());
+                    }
+                })
                 .collect(Collectors.toList());
     }
 

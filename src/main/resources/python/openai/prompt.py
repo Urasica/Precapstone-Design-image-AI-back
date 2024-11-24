@@ -43,7 +43,7 @@ def generate_emoji_description(text):
                 f"without losing essential details."
             )
             response = client.chat.completions.create(
-                model="gpt-4",
+                model="gpt-4o",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.5,
                 max_tokens=70
