@@ -41,11 +41,7 @@ public class ImageGenerationService {
         String imageData = colabService.generateImage(promptText);
         String imageUrl = fileStorageService.storeImage(imageData);
 
-        Image image = new Image();
-        image.setImageUrl(imageUrl);
-        image.setPrompt(promptText);
-        image.setGenAt(LocalDateTime.now());
-        image.setUser(user);
+        Image image = new Image(imageUrl, promptText, LocalDateTime.now(), user);
         imageRepository.save(image);
 
         ImageDTO imageDTO = new ImageDTO(imageUrl, imageData);

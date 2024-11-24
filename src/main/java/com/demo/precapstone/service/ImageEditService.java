@@ -35,11 +35,7 @@ public class ImageEditService {
         String storedImageUrl = fileStorageService.storeImage(imageEditRequestDTO.getBase64ImageData());
 
         // 이미지 엔티티 생성 및 저장
-        Image image = new Image();
-        image.setImageUrl(storedImageUrl);
-        image.setPrompt("edited by user"); // 업로드된 이미지 구분용 기본 프롬프트
-        image.setGenAt(LocalDateTime.now());
-        image.setUser(user);
+        Image image = new Image(storedImageUrl, "edited by user", LocalDateTime.now(), user);
         imageRepository.save(image);
 
         // 클라이언트로 반환할 DTO 생성
