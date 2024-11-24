@@ -6,28 +6,43 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.json.JSONObject;
 
 @Service
 public class ColabService {
 
-    private final Queue<String> colabApiUrls = new LinkedList<>();
-
-    public ColabService() {
-        // 초기 서버 주소를 설정 (컨트롤러에서 추가 가능)
-    }
+    private final Queue<String> colabApiUrls = new ConcurrentLinkedQueue<>();
+    private final Set<String> urlSet = new LinkedHashSet<>(); // 중복 방지를 위한 추가 자료구조
 
     public synchronized void addServerUrl(String serverUrl) {
         serverUrl = serverUrl.replace("\"", "").trim();
-        colabApiUrls.add(serverUrl);
-        System.out.println("Server URL added: " + serverUrl);
+        if (urlSet.add(serverUrl)) { // 중복 방지
+            colabApiUrls.add(serverUrl);
+            System.out.println("Server URL added: " + serverUrl);
+        } else {
+            System.out.println("Server URL already exists: " + serverUrl);
+        }
     }
 
     public synchronized boolean removeServerUrl(String serverUrl) {
-        return colabApiUrls.remove(serverUrl);
+        if (urlSet.remove(serverUrl)) {
+            colabApiUrls.remove(serverUrl);
+            System.out.println("Server URL removed: " + serverUrl);
+            return true;
+        }
+        System.out.println("Server URL not found: " + serverUrl);
+        return false;
+    }
+
+    public synchronized List<String> getServerUrls() {
+        return new ArrayList<>(urlSet); // 변경 방지를 위해 복사본 반환
     }
 
     public String generateImage(String prompt) {
@@ -39,7 +54,7 @@ public class ColabService {
         }
 
         try {
-            // Colab 서버에 HTTP 요청을 전송
+            // Colab 서버에 HTTP 요청 전송
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI(currentServerUrl))
@@ -63,17 +78,18 @@ public class ColabService {
     private synchronized String getNextServerUrl() {
         // 현재 서버 주소를 꺼내고 순환 구조로 다시 추가
         if (colabApiUrls.isEmpty()) {
-            return null;
+            throw new RuntimeException("No server URLs available.");
         }
         String url = colabApiUrls.poll();
         colabApiUrls.add(url);
+        System.out.println("Selected server URL: " + url);
         return url;
     }
 
     private String buildRequestBody(String prompt) {
         return "{"
                 + "\"prompt\": \"" + prompt + "\","
-                + "\"negative_prompt\": \"" + "blurry, low quality, deformed face, distorted features\""
+                + "\"negative_prompt\": \"blurry, low quality, deformed face, distorted features\""
                 + "}";
     }
 }
